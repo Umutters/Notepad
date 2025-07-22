@@ -66,53 +66,9 @@ class EntryPageState extends State<EntryPage> {
          ]
       ),
      floatingActionButton: MyFloatingActionButton(
-     onPressed: () {
-       // Dialog göstermek için showDialog kullanılır
-       showDialog(
-         context: context,
-         builder: (BuildContext context) {
-           return AlertDialog(
-             title: Text('Yeni Not Ekle'),
-             content: Column(
-               mainAxisSize: MainAxisSize.min,
-               children: [
-                 TextField(
-                   decoration: InputDecoration(hintText: 'Not başlığı'),
-                   controller: textEditingController,
-                 ),
-                 SizedBox(height: 10),
-                 TextField(
-                   decoration: InputDecoration(hintText: 'Not içeriği'),
-                 )
-               ],
-             ),
-             actions: [
-               TextButton(
-                 onPressed: () {
-                   Navigator.of(context).pop();
-                 },
-                 child: Text('İptal')
-               ),
-               TextButton(
-                 onPressed: () {
-                   setState(() {
-                     grids.add(GridYapisi(
-                       id: grids.length + 1,
-                       title: textEditingController.text,
-                       description: 'Yeni not içeriği',
-                     ));
-                   });
-                   Navigator.of(context).pop();
-                 },
-                 child: Text('Ekle')
-               )
-             ]
-           );
-         }
-       );
-     }
+       grids: grids,
      ),
-      backgroundColor: Colors.white,
-    );
-  }
+     backgroundColor: Colors.white,
+   );
+ }
 }
