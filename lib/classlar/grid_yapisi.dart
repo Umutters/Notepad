@@ -3,5 +3,6 @@ class GridYapisi{
   int? id;
   String? title;
   String? description;
-  GridYapisi({required this.id, required this.title, required this.description});
+  DateTime? createdAt;
+  GridYapisi({required this.id, required this.title, required this.description, this.createdAt});
 }

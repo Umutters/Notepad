@@ -62,11 +62,27 @@ class EntryPageState extends State<EntryPage> {
          )
             ]
           ,),
-         GridViewCard(grids: grids),
+         GridViewCard(
+           grids: grids,
+           onGridUpdate: (updatedGrid, index) {
+             setState(() {
+               grids[index] = updatedGrid;
+             });
+           },
+         ),
          ]
       ),
      floatingActionButton: MyFloatingActionButton(
-       grids: grids,
+       onAdd: (title) {
+         setState(() {
+           grids.add(GridYapisi(
+             id: grids.length + 1,
+             title: title,
+             description: 'Yeni not içeriği',
+              createdAt: DateTime.now(),
+           ));
+         });
+       },
      ),
      backgroundColor: Colors.white,
    );

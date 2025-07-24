@@ -1,54 +1,41 @@
 import 'package:flutter/material.dart';
-import 'package:umuttersnotlar/classlar/grid_yapisi.dart';
+
+
 class MyFloatingActionButton extends StatelessWidget {
-  final List<GridYapisi> grids;
-   MyFloatingActionButton({super.key, required this.grids});
-   final textEditingController = TextEditingController();
+  final void Function(String title) onAdd;
+  const MyFloatingActionButton({super.key, required this.onAdd});
+
   @override
   Widget build(BuildContext context) {
+    final textEditingController = TextEditingController();
     return FloatingActionButton(
-     onPressed: () {
-       showDialog(
-         context: context,
-         builder: (BuildContext context) {
-           return AlertDialog(
-             title: Text('Yeni Not Ekle'),
-             content: Column(
-               mainAxisSize: MainAxisSize.min,
-               children: [
-                 TextField(
-                   decoration: InputDecoration(hintText: 'Not başlığı'),
-                   controller: textEditingController,
-                 ),
-                 SizedBox(height: 10),
-                 TextField(
-                   decoration: InputDecoration(hintText: 'Not içeriği'),
-                 )
-               ],
-             ),
-             actions: [
-               TextButton(
-                 onPressed: () {
-                   Navigator.of(context).pop();
-                 },
-                 child: Text('İptal')
-               ),
-               TextButton(
-                 onPressed: () {
-                   grids.add(GridYapisi(
-                     id: grids.length + 1,
-                     title: textEditingController.text,
-                     description: 'Yeni not içeriği',
-                   ));
-                   Navigator.of(context).pop();
-                 },
-                 child: Text('Ekle')
-               )
-             ]
-           );
-         }
-       );
-     }
-     );
+      onPressed: () {
+        showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: Text('Yeni Not Ekle'),
+              content: TextField(
+                decoration: InputDecoration(hintText: 'Not başlığı'),
+                controller: textEditingController,
+              ),
+              actions: [
+                TextButton(
+                  onPressed: () => Navigator.of(context).pop(),
+                  child: Text('İptal'),
+                ),
+                TextButton(
+                  onPressed: () {
+                    onAdd(textEditingController.text);
+                    Navigator.of(context).pop();
+                  },
+                  child: Text('Ekle'),
+                ),
+              ],
+            );
+          }
+        );
+      },
+    );
   }
 }
