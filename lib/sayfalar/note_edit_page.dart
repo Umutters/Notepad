@@ -41,6 +41,8 @@ class _NoteEditPageState extends State<NoteEditPage> {
                 id: widget.grid.id,
                 title: titleController.text,
                 description: descriptionController.text,
+                createdAt: widget.grid.createdAt ?? DateTime.now(),
+                updatedAt: DateTime.now(), // Güncelleme zamanını ayarla
               );
               
               // Ana sayfaya güncellenen notu geri gönder

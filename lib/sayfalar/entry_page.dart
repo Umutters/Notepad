@@ -18,6 +18,7 @@ class EntryPage extends StatefulWidget {
 
 class EntryPageState extends State<EntryPage> {
   bool isBrandClicked = false;
+  bool isButtonClicked = false;
   late String dropDownValue;
   late List<GridYapisi> grids;
   TextEditingController textEditingController = TextEditingController();
@@ -27,14 +28,11 @@ class EntryPageState extends State<EntryPage> {
   void initState() {
     super.initState();
     dropDownValue = widget.dropdownItems.first;
-    grids = [
-      GridYapisi(id: 1, title: 'En Sevdiğim oyunlar', description: 'Description 1'),
-      GridYapisi(id: 2, title: 'En Sevdiğim Filmler', description: 'Description 2'),
-      GridYapisi(id: 3, title: 'En Sevdiğim Kitaplar', description: 'Description 3')
-    ];
+    grids = [];
   }
   @override
   Widget build(BuildContext context) {
+     IconData? icon=isButtonClicked ? Icons.arrow_upward : Icons.arrow_downward;
     return Scaffold(
       appBar: NotUygulamaAppBar(isBrandClicked: isBrandClicked),
       body: Column(
@@ -42,8 +40,14 @@ class EntryPageState extends State<EntryPage> {
           Row(
             children: [
               IconButton(
-                onPressed: () {},
-                icon: Icon(Icons.arrow_downward),
+                onPressed: () {
+                  setState(() {
+                    //tersine çevir
+                    isButtonClicked = !isButtonClicked;
+                    grids = grids.reversed.toList();
+                    icon = isButtonClicked ? Icons.arrow_upward : Icons.arrow_downward;
+                  });
+                }, icon: Icon(icon),
               ),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16.0),
@@ -55,6 +59,14 @@ class EntryPageState extends State<EntryPage> {
                   )).toList(),
                   onChanged: (value) {
                     setState(() {
+                      //tarihe göre sırala
+                      if (value == 'Tarihe Göre Sırala') {
+                        grids.sort((a, b) => (a.createdAt ?? DateTime(0)).compareTo(b.createdAt ?? DateTime(0)));
+                      } else if (value == 'Değişim Tarihine Göre Sırala') {
+                        grids.sort((a, b) => (a.updatedAt ?? DateTime(0)).compareTo(b.updatedAt ?? DateTime(0)));
+                      } else if (value == 'Başlığa Göre Sırala') {
+                        grids.sort((a, b) => a.title!.compareTo(b.title!));
+                      }
                       dropDownValue = value!;
                     });
                   }
