@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:umuttersnotlar/classlar/grid_yapisi.dart';
 import 'package:umuttersnotlar/widgetlar/appbar/drawer.dart';
 import 'package:umuttersnotlar/widgetlar/appbar/not_uygulama_appbar.dart';
 import 'package:umuttersnotlar/widgetlar/scaffold/grid_view_card.dart';
 import 'package:umuttersnotlar/widgetlar/scaffold/my_floating_action_button.dart';
+import 'package:umuttersnotlar/classlar/renkler.dart';
+import 'package:umuttersnotlar/controller/controller.dart';
 
 class EntryPage extends StatefulWidget {
    EntryPage({super.key});
@@ -20,21 +21,35 @@ class EntryPageState extends State<EntryPage> {
   bool isBrandClicked = false;
   bool isButtonClicked = false;
   late String dropDownValue;
-  late List<GridYapisi> grids;
+  late Controller controller; // Controller instance
   TextEditingController textEditingController = TextEditingController();
-  late var fab=textEditingController;
 
   @override
   void initState() {
     super.initState();
     dropDownValue = widget.dropdownItems.first;
-    grids = [];
+    controller = Controller(); // Controller'ı başlat
+  }
+
+  @override
+  void dispose() {
+    controller.dispose(); // Controller'ı temizle
+    textEditingController.dispose();
+    super.dispose();
+  }
+
+  // Controller'dan sıralama fonksiyonunu kullanan metod
+  void sort(String value) {
+    setState(() {
+      controller.sort(value);
+      dropDownValue = value;
+    });
   }
   @override
   Widget build(BuildContext context) {
-     IconData? icon=isButtonClicked ? Icons.arrow_upward : Icons.arrow_downward;
+    IconData? icon = isButtonClicked ? Icons.arrow_upward : Icons.arrow_downward;
     return Scaffold(
-      backgroundColor: const Color.fromARGB(255, 255, 255, 255),
+      backgroundColor: Renkler.scaffoldColor,
       appBar: NotUygulamaAppBar(
         isBrandClicked: isBrandClicked,
         onBrandToggle: () {
@@ -52,7 +67,7 @@ class EntryPageState extends State<EntryPage> {
                   setState(() {
                     //tersine çevir
                     isButtonClicked = !isButtonClicked;
-                    grids = grids.reversed.toList();
+                    controller.reverseGrids(); // Controller'dan tersine çevir
                     icon = isButtonClicked ? Icons.arrow_upward : Icons.arrow_downward;
                   });
                 }, icon: Icon(icon),
@@ -66,27 +81,17 @@ class EntryPageState extends State<EntryPage> {
                     child: Text(item),
                   )).toList(),
                   onChanged: (value) {
-                    setState(() {
-                      //tarihe göre sirala
-                      if (value == 'Tarihe Göre Sirala') {
-                        grids.sort((a, b) => (a.createdAt ?? DateTime(0)).compareTo(b.createdAt ?? DateTime(0)));
-                      } else if (value == 'Değişim Tarihine Göre Sirala') {
-                        grids.sort((a, b) => (a.updatedAt ?? DateTime(0)).compareTo(b.updatedAt ?? DateTime(0)));
-                      } else if (value == 'Başliğa Göre Sirala') {
-                        grids.sort((a, b) => a.title!.compareTo(b.title!));
-                      }
-                      dropDownValue = value!;
-                    });
-                  }
+                    sort(value!);
+                  },
                 ),
          )
             ]
           ,),
          GridViewCard(
-           grids: grids,
+           grids: controller.grids, // Controller'dan grids al
            onGridUpdate: (updatedGrid, index) {
              setState(() {
-               grids[index] = updatedGrid;
+               controller.updateGrid(updatedGrid, index); // Controller ile güncelle
              });
            },
          ),
@@ -96,12 +101,7 @@ class EntryPageState extends State<EntryPage> {
        textEditingController: textEditingController,
        onAdd: (title) {
          setState(() {
-           grids.add(GridYapisi(
-             id: grids.length + 1,
-             title: title,
-             description: 'Yeni not içeriği',
-              createdAt: DateTime.now(),
-           ));
+           controller.addGrid(title); // Controller ile yeni not ekle
          });
        },
      ),
