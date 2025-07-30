@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:umuttersnotlar/widgetlar/appbar/drawer.dart';
 import 'package:umuttersnotlar/widgetlar/appbar/not_uygulama_appbar.dart';
-import 'package:umuttersnotlar/widgetlar/scaffold/grid_view_card.dart';
-import 'package:umuttersnotlar/widgetlar/scaffold/my_floating_action_button.dart';
-import 'package:umuttersnotlar/classlar/renkler.dart';
+import 'package:umuttersnotlar/widgetlar/cards/grid_view_card.dart';
+import 'package:umuttersnotlar/widgetlar/widgets/my_floating_action_button.dart';
+import 'package:umuttersnotlar/theme/renkler.dart';
 import 'package:umuttersnotlar/controller/controller.dart';
 
 class EntryPage extends StatefulWidget {
@@ -91,9 +91,15 @@ class EntryPageState extends State<EntryPage> {
            grids: controller.grids, // Controller'dan grids al
            onGridUpdate: (updatedGrid, index) {
              setState(() {
-               controller.updateGrid(updatedGrid, index); // Controller ile güncelle
+               controller.updateGrid(updatedGrid, index);
+                // Controller ile güncelle
              });
            },
+            onGridDelete: (index) {
+              setState(() {
+                controller.removeGrid(index);
+              });
+            },
          ),
          ]
       ),

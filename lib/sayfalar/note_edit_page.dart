@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:umuttersnotlar/classlar/grid_yapisi.dart';
-import 'package:umuttersnotlar/classlar/renkler.dart';
+import 'package:umuttersnotlar/models/grid_yapisi.dart';
+import 'package:umuttersnotlar/theme/renkler.dart';
 
 class NoteEditPage extends StatefulWidget {
   final GridYapisi grid;
@@ -11,7 +11,7 @@ class NoteEditPage extends StatefulWidget {
 }
 
 class _NoteEditPageState extends State<NoteEditPage> {
-  bool isTextClicked=false;
+
   Color? selectedColor;
   late TextEditingController titleController;
   late TextEditingController descriptionController;
@@ -34,22 +34,41 @@ class _NoteEditPageState extends State<NoteEditPage> {
   Widget build(BuildContext context) {
     
     return Scaffold(
-      appBar: isTextClicked 
-        ? AppBar(
-            title: GestureDetector(
-              onTap: () {
-                setState(() {
-                  isTextClicked = !isTextClicked;
-                });
-              },
-              child: Text('Not Düzenle')
-            )
-          ) 
-        : AppBar(
-            title: Text('Not Düzenle'),
-            actions: [
-              IconButton(
-                icon: Icon(Icons.save),
+      appBar: AppBar(
+        title: GestureDetector(
+          child: Text('${widget.grid.title}'),
+          onTap: () {
+            showDialog(
+              context: context,
+              builder: (BuildContext context) {
+                return AlertDialog(
+                  title: Text('Not Başlığı'),
+                  content: TextField(
+                    controller: titleController,
+                    decoration: InputDecoration(hintText: 'Başlık girin'),
+                ),
+                actions: [
+                  TextButton(
+                    onPressed: () => Navigator.of(context).pop(),
+                    child: Text('İptal'),
+                  ),
+                  TextButton(
+                    onPressed: () {
+                      setState(() {
+                        widget.grid.title = titleController.text;
+                       });
+                      Navigator.of(context).pop();
+                    },
+                    child: Text('Tamam'),
+                  ),
+                ],
+              );
+            });
+          },
+        ),
+        actions: [
+          IconButton(
+            icon: Icon(Icons.save),
                 onPressed: () {
                   // Güncellenen notu hazırla ve geri dön
                   final updatedGrid = GridYapisi(
@@ -84,8 +103,10 @@ class _NoteEditPageState extends State<NoteEditPage> {
                 controller: descriptionController,
                 style: TextStyle(fontSize: 16,color: selectedColor ?? Colors.black),
                 decoration: InputDecoration(
-                  labelText: 'İçerik',
+                 
                   border: OutlineInputBorder(),
+                  filled: true,
+                  fillColor:widget.grid.cardColor ?? Colors.white,
                 ),
                 maxLines: 8,
               ),
@@ -122,6 +143,8 @@ class _NoteEditPageState extends State<NoteEditPage> {
           ],
         ),
       ),
+      backgroundColor: Renkler.scaffoldColor,
     );
+    
   }
 }

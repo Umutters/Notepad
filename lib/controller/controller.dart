@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:umuttersnotlar/classlar/grid_yapisi.dart';
+import 'package:umuttersnotlar/models/grid_yapisi.dart';
 
 class Controller extends ChangeNotifier {
   List<GridYapisi> _grids = [];
@@ -68,4 +68,6 @@ class Controller extends ChangeNotifier {
     _grids = _grids.reversed.toList();
     notifyListeners(); // UI'yi güncelle
   }
+
+  // Not silme
 }
