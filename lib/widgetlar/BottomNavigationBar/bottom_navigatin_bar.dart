@@ -6,15 +6,17 @@ class MyBottomNavBar extends StatelessWidget {
   final ValueChanged<int> onTap;
   final Color? selectedColor;
   final ValueChanged<Color>? onColorChanged;
-  final TextEditingController? textController; // ✅ TextEditingController kullan
-  
-     MyBottomNavBar({
+  final TextEditingController? textController;
+  final Function(String format, bool isActive)? onFormatChanged; // ✅ Format callback
+
+   MyBottomNavBar({
     super.key,
     required this.currentIndex,
     required this.onTap,
     this.selectedColor,
     this.onColorChanged,
-    this.textController, // ✅ TextField controller'ı
+    this.textController,
+    this.onFormatChanged,
   });
 
   @override
@@ -30,39 +32,40 @@ class MyBottomNavBar extends StatelessWidget {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
-            // ✅ Seçili metni büyük harfe çevir
-            IconButton(
-              icon: Icon(Icons.format_size),
-              onPressed: () {
-                _formatSelectedText('uppercase');
-              },
-            ),
-            // ✅ Seçili metni küçük harfe çevir
-            IconButton(
-              icon: Icon(Icons.text_fields),
-              onPressed: () {
-                _formatSelectedText('lowercase');
-              },
-            ),
-            // ✅ Seçili metni kalın yap (** ile)
             IconButton(
               icon: Icon(Icons.format_bold),
+              tooltip: 'Kalın',
               onPressed: () {
-                _formatSelectedText('bold');
+                _toggleFormat('bold'); // ✅ Toggle format
               },
             ),
-            // ✅ Seçili metni italik yap (* ile)
             IconButton(
               icon: Icon(Icons.format_italic),
+              tooltip: 'İtalik',
               onPressed: () {
-                _formatSelectedText('italic');
+                _toggleFormat('italic');
               },
             ),
-            // ✅ Renk seçici
+            IconButton(
+              icon: Icon(Icons.format_size),
+              tooltip: 'Büyüt',
+              onPressed: () {
+                _formatSelectedText('uppercase'); // Sadece text transform
+              },
+            ),
             IconButton(
               icon: Icon(Icons.color_lens),
+              tooltip: 'Renk Seç',
               onPressed: () {
                 _showColorPicker(context);
+              },
+            ),
+            //altına çizgi ekle
+            IconButton(
+              icon: Icon(Icons.format_underline),
+              tooltip: 'Altı Çizili',
+              onPressed: () {
+                _toggleFormat('underline'); // ✅ Altı çizili format
               },
             ),
           ],
@@ -71,14 +74,21 @@ class MyBottomNavBar extends StatelessWidget {
     );
   }
 
-  // ✅ Seçili metni formatla
+  // ✅ Format toggle (TextStyle değiştir)
+  void _toggleFormat(String format) {
+    if (onFormatChanged != null) {
+      onFormatChanged!(format, true); // Parent'a bildir
+    }
+  }
+
+  // ✅ Sadece text transformation (büyük/küçük harf)
   void _formatSelectedText(String format) {
     if (textController == null) return;
     
     final selection = textController!.selection;
     final text = textController!.text;
     
-    if (selection.start == selection.end) return; // Seçim yoksa çık
+    if (selection.start == selection.end) return;
     
     String selectedText = text.substring(selection.start, selection.end);
     String formattedText;
@@ -90,27 +100,19 @@ class MyBottomNavBar extends StatelessWidget {
       case 'lowercase':
         formattedText = selectedText.toLowerCase();
         break;
-      case 'bold':
-        formattedText = '**$selectedText**'; // Markdown bold
-        break;
-      case 'italic':
-        formattedText = '*$selectedText*'; // Markdown italic
-        break;
       default:
         formattedText = selectedText;
     }
     
-    // Metni güncelle
     final newText = text.replaceRange(selection.start, selection.end, formattedText);
     textController!.text = newText;
     
-    // Cursor pozisyonunu ayarla
     textController!.selection = TextSelection.collapsed(
       offset: selection.start + formattedText.length,
     );
   }
 
-  // ✅ Renk seçici dialog
+  // ✅ Renk seçici (StatefulBuilder ile)
   void _showColorPicker(BuildContext context) {
     if (onColorChanged == null) return;
     
@@ -119,70 +121,75 @@ class MyBottomNavBar extends StatelessWidget {
     showDialog(
       context: context,
       builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text('Yazı Rengi Seç'),
-          content: SizedBox(
-            width: 300,
-            height: 200,
-            child: GridView.builder(
-              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 4,
-                crossAxisSpacing: 8,
-                mainAxisSpacing: 8,
-              ),
-              itemCount: _colors.length,
-              itemBuilder: (context, index) {
-                return GestureDetector(
-                  onTap: () {
-                    tempColor = _colors[index];
-                  },
-                  child: Container(
-                    decoration: BoxDecoration(
-                      color: _colors[index],
-                      borderRadius: BorderRadius.circular(8),
-                      border: Border.all(
-                        color: tempColor == _colors[index] 
-                            ? Colors.black 
-                            : Colors.grey,
-                        width: 2,
-                      ),
-                    ),
+        return StatefulBuilder( // ✅ StatefulBuilder ekle
+          builder: (context, setState) {
+            return AlertDialog(
+              title: Text('Yazı Rengi Seç'),
+              content: SizedBox(
+                width: 300,
+                height: 200,
+                child: GridView.builder(
+                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 4,
+                    crossAxisSpacing: 8,
+                    mainAxisSpacing: 8,
                   ),
-                );
-              },
-            ),
-          ),
-          actions: [
-            TextButton(
-              child: Text('İptal'),
-              onPressed: () => Navigator.of(context).pop(),
-            ),
-            TextButton(
-              child: Text('Tamam'),
-              onPressed: () {
-                Navigator.of(context).pop();
-                onColorChanged!(tempColor);
-              },
-            ),
-          ],
+                  itemCount: _colors.length,
+                  itemBuilder: (context, index) {
+                    return GestureDetector(
+                      onTap: () {
+                        setState(() {
+                          tempColor = _colors[index]; // ✅ Dialog içinde güncelle
+                        });
+                      },
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: _colors[index],
+                          borderRadius: BorderRadius.circular(8),
+                          border: Border.all(
+                            color: tempColor == _colors[index] 
+                                ? Colors.black 
+                                : Colors.grey,
+                            width: tempColor == _colors[index] ? 3 : 1,
+                          ),
+                        ),
+                      ),
+                    );
+                  },
+                ),
+              ),
+              actions: [
+                TextButton(
+                  child: Text('İptal'),
+                  onPressed: () => Navigator.of(context).pop(),
+                ),
+                TextButton(
+                  child: Text('Tamam'),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                    onColorChanged!(tempColor);
+                  },
+                ),
+              ],
+            );
+          },
         );
       },
     );
   }
 
   final List<Color> _colors = [
-   Colors.red,
-   Colors.green,
-   Colors.blue,
-   Colors.yellow,
-   Colors.orange,
-   Colors.purple,
-   Colors.brown,
-   Colors.grey,
-   Colors.black,
-   Colors.white,
- ]; // ✅ Renk paleti
-
+    Colors.black,
+    Colors.red,
+    Colors.green,
+    Colors.blue,
+    Colors.orange,
+    Colors.purple,
+    Colors.pink,
+    Colors.teal,
+    Colors.brown,
+    Colors.grey,
+  ];
 }
 
 

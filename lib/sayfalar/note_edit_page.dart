@@ -17,10 +17,12 @@ class _NoteEditPageState extends State<NoteEditPage> {
   late QuillController _quillController;
   Color? selectedCardColor;
   Color? selectedTextColor;
-  late TextEditingController titleController;
+   TextEditingController? titleController;
   late TextEditingController descriptionController;
   int _selectedIndex = 0;
-
+  bool _isBold = false;
+  bool _isItalic = false;
+  bool _isUnderline = false; // ✅ Altı çizili kontrolü
   @override
   void initState() {
     super.initState();
@@ -30,11 +32,17 @@ class _NoteEditPageState extends State<NoteEditPage> {
     descriptionController = TextEditingController(text: widget.grid.description);
     selectedCardColor = widget.grid.cardColor;
     selectedTextColor = widget.grid.textColor;
+     // ✅ Database'den sayfa rengi
+    
+    // ✅ Database'den format durumlarını al
+    _isBold = widget.grid.isBold ?? false;
+    _isItalic = widget.grid.isItalic ?? false;
+    _isUnderline = widget.grid.isUnderline ?? false;
   }
 
   @override
   void dispose() {
-    titleController.dispose();
+    titleController?.dispose();
     descriptionController.dispose();
     _quillController.dispose();
     super.dispose();
@@ -67,10 +75,12 @@ class _NoteEditPageState extends State<NoteEditPage> {
                   TextButton(
                     onPressed: () {
                       setState(() {
-                       Navigator.of(context).pop();
-                       
-                       });
-                      
+                        widget.grid.title = titleController?.text ?? '';
+                        // Başlık değiştiğinde sayfayı güncelle
+                        if (context.mounted) {
+                          Navigator.of(context).pop();
+                        }
+                      });
                     },
                     child: Text('Tamam'),
                   ),
@@ -83,20 +93,28 @@ class _NoteEditPageState extends State<NoteEditPage> {
           IconButton(
             icon: Icon(Icons.save),
                 onPressed: () async{
-                  final plainText = _quillController.document.toPlainText();
-                  // Güncellenen notu hazırla ve geri dön
+                  final description = descriptionController.text;
+                  final title = titleController?.text ?? '';
+  
                   final updatedGrid = GridYapisi(
                     id: widget.grid.id,
-                    title: titleController.text,
-                    description: plainText,
+                    title: title,
+                    description: description,
                     createdAt: widget.grid.createdAt ?? DateTime.now(),
                     updatedAt: DateTime.now(),
                     cardColor: selectedCardColor ?? widget.grid.cardColor,
                     textColor: selectedTextColor ?? widget.grid.textColor,
+                    isBold: _isBold, // ✅ Format durumlarını kaydet
+                    isItalic: _isItalic,
+                    isUnderline: _isUnderline,
+                    
                   );
+  
                   if (updatedGrid.id != null) {
-              await Services.updateGrid(updatedGrid);
-    }
+                    await Services.updateGrid(updatedGrid);
+                    print('Not kaydedildi: ${updatedGrid.title}');
+                  }
+  
                   // Ana sayfaya güncellenen notu geri gönder
                   if(context.mounted) {
                     Navigator.pop(context, updatedGrid);
@@ -109,29 +127,47 @@ class _NoteEditPageState extends State<NoteEditPage> {
         children: [ 
           
             SizedBox(height: 16),
-            SingleChildScrollView(
-              child: TextField(
-                
-                controller: descriptionController,
-                style: TextStyle(fontSize: 16,color: selectedTextColor ?? Colors.black),
-                decoration: InputDecoration(
-                
-                  border: OutlineInputBorder(),
-                  filled: true,
-                  fillColor:widget.grid.cardColor ?? Colors.white,
+            Expanded(
+              child: Container(
+                color: selectedCardColor ?? widget.grid.cardColor ?? Colors.white,
+                padding: EdgeInsets.all(16),
+                child: TextField(
+                  
+                  controller: descriptionController,
+                  style: TextStyle(
+                    fontSize: 16,
+                    color: selectedTextColor ?? Colors.black,
+                    fontWeight: _isBold ? FontWeight.bold : FontWeight.normal, // ✅ Bold kontrolü
+                    fontStyle: _isItalic ? FontStyle.italic : FontStyle.normal, // ✅ Italic kontrolü
+                    decoration: _isUnderline ? TextDecoration.underline : TextDecoration.none,
+                  ),
+                  decoration: InputDecoration(
+                    
+                    border: InputBorder.none,
+                    hintText: 'Metni seçip format butonlarını kullanın...',
+                  ),
+                  maxLines: null,
+                  expands: true,
                 ),
-                maxLines: 8,
               ),
             ),
           
         ],
       ),
-      bottomNavigationBar: MyBottomNavBar(textController: descriptionController, onColorChanged: (value) => setState(() => selectedTextColor = value), selectedColor: selectedTextColor, currentIndex: _selectedIndex, onTap: (index) {
-        setState(() {
-          _selectedIndex = index;
-        });
-        
-      }),
+      bottomNavigationBar: MyBottomNavBar(
+        textController: descriptionController,
+        onColorChanged: (value) => setState(() => selectedTextColor = value),
+        onFormatChanged: (format, isActive) { // ✅ Format callback
+          setState(() {
+            if (format == 'bold') _isBold = !_isBold;
+            if (format == 'italic') _isItalic = !_isItalic;
+            if (format == 'underline') _isUnderline = !_isUnderline; // ✅ Altı çizili kontrolü
+          });
+        },
+        selectedColor: selectedTextColor,
+        currentIndex: _selectedIndex,
+        onTap: (index) => setState(() => _selectedIndex = index),
+      ),
       backgroundColor: Renkler.scaffoldColor,
     );
     
