@@ -11,11 +11,13 @@ class GridViewCard extends StatefulWidget {
     required this.grids,
     this.onGridUpdate,
     this.onGridDelete,
+    this.onGridTap,
   });
   final List<GridYapisi> grids;
   final Function(GridYapisi updatedGrid, int index)? onGridUpdate;
   final Function(int index)? onGridDelete;
-  
+  final Function(GridYapisi grid, int index, BuildContext context)? onGridTap;
+
   @override
   State<GridViewCard> createState() => _GridViewCardState();
 }

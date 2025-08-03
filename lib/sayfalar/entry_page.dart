@@ -6,8 +6,9 @@ import 'package:umuttersnotlar/widgetlar/widgets/my_floating_action_button.dart'
 import 'package:umuttersnotlar/theme/renkler.dart';
 import 'package:umuttersnotlar/controller/controller.dart';
 
+
 class EntryPage extends StatefulWidget {
-   EntryPage({super.key});
+  EntryPage({super.key});
   final List<String> dropdownItems = [
     'Tarihe Göre Sirala',
     'Değişim Tarihine Göre Sirala',
@@ -21,99 +22,104 @@ class EntryPageState extends State<EntryPage> {
   bool isBrandClicked = false;
   bool isButtonClicked = false;
   late String dropDownValue;
-  late Controller controller; // Controller instance
+  late Controller controller;
   TextEditingController textEditingController = TextEditingController();
 
   @override
   void initState() {
     super.initState();
     dropDownValue = widget.dropdownItems.first;
-    controller = Controller(); // Controller'ı başlat
+    controller = Controller();
+    controller.addListener(() {
+      setState(() {
+        // Controller değiştiğinde UI'yı güncelle
+      });
+    });
+  }
+
+  void sort(String value) {
+    setState(() {
+      dropDownValue = value;
+      controller.sortGrids(value);
+    });
   }
 
   @override
   void dispose() {
-    controller.dispose(); // Controller'ı temizle
+    controller.dispose();
     textEditingController.dispose();
     super.dispose();
   }
 
-  // Controller'dan sıralama fonksiyonunu kullanan metod
-  void sort(String value) {
+  // AppBar değiştirme fonksiyonu
+  void toggleAppBar() {
     setState(() {
-      controller.sort(value);
-      dropDownValue = value;
+      isBrandClicked = !isBrandClicked;
+      isButtonClicked = !isButtonClicked;
     });
   }
+
   @override
   Widget build(BuildContext context) {
-    IconData? icon = isButtonClicked ? Icons.arrow_upward : Icons.arrow_downward;
     return Scaffold(
       backgroundColor: Renkler.scaffoldColor,
       appBar: NotUygulamaAppBar(
         isBrandClicked: isBrandClicked,
-        onBrandToggle: () {
-          setState(() {
-            isBrandClicked = !isBrandClicked;
-          });
+        isButtonClicked: isButtonClicked,
+        onBrandToggle: toggleAppBar,
+        onSearch: () {
+          controller.searchGrids('');
         },
       ),
+      drawer: const MyDrawer(),
       body: Column(
         children: [
-          Row(
-            children: [
-              IconButton(
-                onPressed: () {
-                  setState(() {
-                    //tersine çevir
-                    isButtonClicked = !isButtonClicked;
-                    controller.reverseGrids(); // Controller'dan tersine çevir
-                    icon = isButtonClicked ? Icons.arrow_upward : Icons.arrow_downward;
-                  });
-                }, icon: Icon(icon),
-              ),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                child: DropdownButton<String>(
-                  value: dropDownValue,
-                  items: widget.dropdownItems.map((item) => DropdownMenuItem(
-                    value: item,
-                    child: Text(item),
-                  )).toList(),
-                  onChanged: (value) {
-                    sort(value!);
-                  },
+          // Dropdown sadece normal modda görünsün
+          if (!isBrandClicked)
+            Row(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: DropdownButton<String>(
+                    value: dropDownValue,
+                    items: widget.dropdownItems.map((item) => DropdownMenuItem(
+                      value: item,
+                      child: Text(item),
+                    )).toList(),
+                    onChanged: (value) {
+                      sort(value!);
+                    },
+                  ),
                 ),
-         )
-            ]
-          ,),
-         GridViewCard(
-           grids: controller.grids, // Controller'dan grids al
-           onGridUpdate: (updatedGrid, index) {
-             setState(() {
-               controller.updateGrid(updatedGrid, index);
-                // Controller ile güncelle
-             });
-           },
-            onGridDelete: (index) {
-              setState(() {
-                controller.removeGrid(index);
-              });
+                // Reverse butonu
+                IconButton(
+                  onPressed: () {
+                    setState(() {
+                      controller.reverseGrids();
+                    });
+                  },
+                  icon: const Icon(Icons.swap_vert),
+                  tooltip: 'Listeyi Ters Çevir',
+                ),
+              ],
+            ),
+          GridViewCard(
+            grids: controller.grids,
+            onGridUpdate: (updatedGrid, index) {
+              controller.updateGrid(updatedGrid, index);
             },
-         ),
-         ]
+            onGridDelete: (index) {
+              controller.removeGrid(index);
+            },
+          ),
+        ],
       ),
-     floatingActionButton: MyFloatingActionButton(
-       textEditingController: textEditingController,
-       onAdd: (title) {
-         setState(() {
-           controller.addGrid(title); // Controller ile yeni not ekle
-         });
-       },
-     ),
-     drawer:isBrandClicked
-         ? null
-         :  MyDrawer(),
-   );
- }
+      floatingActionButton: MyFloatingActionButton(
+        textEditingController: textEditingController,
+        onAdd: (title) {
+          controller.addGrid(title);
+        },
+      ),
+    );
+  }
 }

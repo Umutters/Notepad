@@ -4,11 +4,15 @@ import 'package:umuttersnotlar/theme/renkler.dart';
 class NotUygulamaAppBar extends StatelessWidget implements PreferredSizeWidget {
   final bool isBrandClicked;
   final VoidCallback? onBrandToggle;
-
+  final bool isButtonClicked;
+  final VoidCallback? onSearch;
   const NotUygulamaAppBar({
     super.key, 
+    required this.onBrandToggle,
     required this.isBrandClicked, 
-    this.onBrandToggle
+    required this.isButtonClicked,
+    required this.onSearch,
+
   });
 
   @override

@@ -8,7 +8,6 @@ class MyFloatingActionButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    
     return FloatingActionButton(
       backgroundColor: Renkler.scaffoldColor,
       onPressed: () {
@@ -17,7 +16,10 @@ class MyFloatingActionButton extends StatelessWidget {
           builder: (BuildContext context) {
             return AlertDialog(
               title: Text('Yeni Not Ekle'),
-              
+              content: TextField(
+                controller: textEditingController,
+                decoration: InputDecoration(hintText: 'Başlık girin'),
+              ),
               actions: [
                 TextButton(
                   onPressed: () => Navigator.of(context).pop(),
@@ -25,8 +27,11 @@ class MyFloatingActionButton extends StatelessWidget {
                 ),
                 TextButton(
                   onPressed: () {
-                    onAdd(textEditingController.text);
-                    textEditingController.clear(); // Ekledikten sonra temizle
+                    final title = textEditingController.text;
+                    if (title.isNotEmpty) {
+                      onAdd(title);
+                    }
+                    textEditingController.clear();
                     Navigator.of(context).pop();
                   },
                   child: Text('Ekle'),
@@ -36,7 +41,7 @@ class MyFloatingActionButton extends StatelessWidget {
           }
         );
       },
-      child:const Icon(Icons.add,color: Color.fromARGB(255, 0, 0, 0),),
+      child: const Icon(Icons.add, color: Color.fromARGB(255, 0, 0, 0)),
     );
   }
 }
