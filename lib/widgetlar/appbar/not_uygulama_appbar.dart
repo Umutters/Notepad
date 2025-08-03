@@ -5,7 +5,7 @@ class NotUygulamaAppBar extends StatelessWidget implements PreferredSizeWidget {
   final bool isBrandClicked;
   final VoidCallback? onBrandToggle;
   final bool isButtonClicked;
-  final VoidCallback? onSearch;
+  final ValueChanged<String?>? onSearch;
   const NotUygulamaAppBar({
     super.key, 
     required this.onBrandToggle,

@@ -1,37 +1,46 @@
 import 'package:flutter/material.dart';
+import 'package:umuttersnotlar/Services/services.dart';
 import 'package:umuttersnotlar/models/grid_yapisi.dart';
 
 class Controller extends ChangeNotifier {
   List<GridYapisi> _grids = [];
+  bool _isLoading = false;
 
   List<GridYapisi> get grids => _grids;
-
+  bool get isLoading => _isLoading;
   // Not ekle
-  void addGrid(String title) {
+Future <void>loadGrids()async{
+  _isLoading = true;
+  notifyListeners();
+  _grids = await Services.getAllNotes();
+  _isLoading = false;
+  notifyListeners();
+  await Services.testDatabase(); // Test amaçlı veritabanı kontrolü
+}
+
+  Future<void> addGrid(String title) async {
     final newGrid = GridYapisi(
       title: title,
       description: '',
       createdAt: DateTime.now(),
       updatedAt: DateTime.now(),
+      cardColor: Colors.white,
     );
-    _grids.add(newGrid);
-    notifyListeners();
+    await Services.insertGrid(newGrid);
+    await loadGrids();
   }
 
   // Not güncelle
-  void updateGrid(GridYapisi updatedGrid, int index) {
-    if (index >= 0 && index < _grids.length) {
-      _grids[index] = updatedGrid;
-      notifyListeners();
-    }
+  Future<void> updateGrid(GridYapisi updatedGrid, int index) async {    
+      await Services.updateGrid(updatedGrid);
+      await loadGrids();
+    
   }
 
   // Not sil
-  void removeGrid(int index) {
-    if (index >= 0 && index < _grids.length) {
-      _grids.removeAt(index);
-      notifyListeners();
-    }
+  Future<void> deleteGrid(int id) async {
+    await Services.deleteGrid(id);
+    await loadGrids();
   }
 
   // Listeyi tersine çevir
@@ -43,7 +52,7 @@ class Controller extends ChangeNotifier {
   // Arama yap
   void searchGrids(String query) {
     if (query.isEmpty) {
-      // Tüm notları göster (bu kısım ihtiyacına göre ayarlanabilir)
+      loadGrids(); // Tüm notları göster
     } else {
       _grids = _grids.where((grid) =>
         (grid.title?.toLowerCase().contains(query.toLowerCase()) ?? false) ||
@@ -68,4 +77,13 @@ class Controller extends ChangeNotifier {
     }
     notifyListeners();
   }
+  Future<void> removeGrid(int index) async {
+  if (index >= 0 && index < _grids.length) {
+    final grid = _grids[index];
+    if (grid.id != null) {
+      await Services.deleteGrid(grid.id!); // ID'yi deleteGrid'e gönder
+      await loadGrids();
+    }
+  }
+}
 }

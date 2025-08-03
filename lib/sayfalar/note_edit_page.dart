@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:umuttersnotlar/Services/services.dart';
 import 'package:umuttersnotlar/models/grid_yapisi.dart';
 import 'package:umuttersnotlar/theme/renkler.dart';
 
@@ -71,18 +72,23 @@ class _NoteEditPageState extends State<NoteEditPage> {
         actions: [
           IconButton(
             icon: Icon(Icons.save),
-                onPressed: () {
+                onPressed: () async{
                   // Güncellenen notu hazırla ve geri dön
                   final updatedGrid = GridYapisi(
                     id: widget.grid.id,
                     title: titleController.text,
                     description: descriptionController.text,
                     createdAt: widget.grid.createdAt ?? DateTime.now(),
-                    updatedAt: DateTime.now(), // Güncelleme zamanını ayarla
+                    updatedAt: DateTime.now(),
+                    cardColor: selectedColor ?? widget.grid.cardColor,
                   );
-                  
+                  if (updatedGrid.id != null) {
+              await Services.updateGrid(updatedGrid);
+    }
                   // Ana sayfaya güncellenen notu geri gönder
-                  Navigator.pop(context, updatedGrid);
+                  if(context.mounted) {
+                    Navigator.pop(context, updatedGrid);
+                  }
                 },
               ),
             ],

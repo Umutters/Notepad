@@ -35,6 +35,7 @@ class EntryPageState extends State<EntryPage> {
         // Controller değiştiğinde UI'yı güncelle
       });
     });
+    controller.loadGrids(); // Başlangıçta verileri yükle
   }
 
   void sort(String value) {
@@ -67,8 +68,8 @@ class EntryPageState extends State<EntryPage> {
         isBrandClicked: isBrandClicked,
         isButtonClicked: isButtonClicked,
         onBrandToggle: toggleAppBar,
-        onSearch: () {
-          controller.searchGrids('');
+        onSearch: (query) {
+          controller.searchGrids(query??'');
         },
       ),
       drawer: const MyDrawer(),
@@ -108,9 +109,10 @@ class EntryPageState extends State<EntryPage> {
             onGridUpdate: (updatedGrid, index) {
               controller.updateGrid(updatedGrid, index);
             },
-            onGridDelete: (index) {
-              controller.removeGrid(index);
+            onGridDelete: (index) async{
+              await controller.removeGrid(index);
             },
+            
           ),
         ],
       ),
