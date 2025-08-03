@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_quill/flutter_quill.dart';
 import 'package:umuttersnotlar/Services/services.dart';
 import 'package:umuttersnotlar/models/grid_yapisi.dart';
 import 'package:umuttersnotlar/theme/renkler.dart';
@@ -13,7 +14,7 @@ class NoteEditPage extends StatefulWidget {
 }
 
 class _NoteEditPageState extends State<NoteEditPage> {
-
+  late QuillController _quillController;
   Color? selectedCardColor;
   Color? selectedTextColor;
   late TextEditingController titleController;
@@ -23,6 +24,8 @@ class _NoteEditPageState extends State<NoteEditPage> {
   @override
   void initState() {
     super.initState();
+    _quillController = QuillController.basic();
+    _quillController.document.insert(0, widget.grid.description ?? '');
     titleController = TextEditingController(text: widget.grid.title);
     descriptionController = TextEditingController(text: widget.grid.description);
     selectedCardColor = widget.grid.cardColor;
@@ -33,6 +36,7 @@ class _NoteEditPageState extends State<NoteEditPage> {
   void dispose() {
     titleController.dispose();
     descriptionController.dispose();
+    _quillController.dispose();
     super.dispose();
   }
 
@@ -63,9 +67,10 @@ class _NoteEditPageState extends State<NoteEditPage> {
                   TextButton(
                     onPressed: () {
                       setState(() {
-                        widget.grid.title = titleController.text;
+                       Navigator.of(context).pop();
+                       
                        });
-                      Navigator.of(context).pop();
+                      
                     },
                     child: Text('Tamam'),
                   ),
@@ -78,11 +83,12 @@ class _NoteEditPageState extends State<NoteEditPage> {
           IconButton(
             icon: Icon(Icons.save),
                 onPressed: () async{
+                  final plainText = _quillController.document.toPlainText();
                   // Güncellenen notu hazırla ve geri dön
                   final updatedGrid = GridYapisi(
                     id: widget.grid.id,
                     title: titleController.text,
-                    description: descriptionController.text,
+                    description: plainText,
                     createdAt: widget.grid.createdAt ?? DateTime.now(),
                     updatedAt: DateTime.now(),
                     cardColor: selectedCardColor ?? widget.grid.cardColor,
@@ -99,10 +105,9 @@ class _NoteEditPageState extends State<NoteEditPage> {
               ),
             ],
           ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          children: [           
+      body: Column(
+        children: [ 
+          
             SizedBox(height: 16),
             SingleChildScrollView(
               child: TextField(
@@ -110,7 +115,7 @@ class _NoteEditPageState extends State<NoteEditPage> {
                 controller: descriptionController,
                 style: TextStyle(fontSize: 16,color: selectedTextColor ?? Colors.black),
                 decoration: InputDecoration(
-                 
+                
                   border: OutlineInputBorder(),
                   filled: true,
                   fillColor:widget.grid.cardColor ?? Colors.white,
@@ -118,11 +123,10 @@ class _NoteEditPageState extends State<NoteEditPage> {
                 maxLines: 8,
               ),
             ),
-            
-          ],
-        ),
+          
+        ],
       ),
-      bottomNavigationBar: MyBottomNavBar(onColorChanged: (value) => setState(() => selectedTextColor = value),selectedColor: selectedTextColor, currentIndex: _selectedIndex, onTap: (index) {
+      bottomNavigationBar: MyBottomNavBar(textController: descriptionController, onColorChanged: (value) => setState(() => selectedTextColor = value), selectedColor: selectedTextColor, currentIndex: _selectedIndex, onTap: (index) {
         setState(() {
           _selectedIndex = index;
         });
