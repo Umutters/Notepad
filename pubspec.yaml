@@ -65,5 +65,5 @@ flutter:
   uses-material-design: true
 
   # Assets section
-  assets:
-    - assets/database/notepad.sqlite
+  #assets:
+  #  - assets/database/notepad.sqlite

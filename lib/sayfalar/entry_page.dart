@@ -112,7 +112,10 @@ class EntryPageState extends State<EntryPage> {
             onGridDelete: (index) async{
               await controller.removeGrid(index);
             },
-            
+            onColorChange: (index, color)async {
+              
+             await controller.updateGrid(controller.grids[index], index);
+            },
           ),
         ],
       ),

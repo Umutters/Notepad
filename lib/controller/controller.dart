@@ -15,7 +15,7 @@ Future <void>loadGrids()async{
   _grids = await Services.getAllNotes();
   _isLoading = false;
   notifyListeners();
-  await Services.testDatabase(); // Test amaçlı veritabanı kontrolü
+  // Test amaçlı veritabanı kontrolü
 }
 
   Future<void> addGrid(String title) async {

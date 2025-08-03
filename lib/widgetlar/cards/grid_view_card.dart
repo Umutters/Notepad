@@ -122,6 +122,9 @@ class _GridViewCardState extends State<GridViewCard> {
                   setState(() {
                     grid.cardColor = color;
                   });
+                  if (widget.onColorChange != null) {
+                    widget.onColorChange!(index, color);
+                  }
                 }),
                 icon: const Icon(Icons.palette, size: 20),
                 padding: EdgeInsets.zero,

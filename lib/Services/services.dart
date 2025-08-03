@@ -10,7 +10,7 @@ class Services {
       join(await getDatabasesPath(), 'notepad_v2.sqlite'), // Adı değiştirildi
       onCreate: (db, version) {
         return db.execute(
-          'CREATE TABLE Notes(id INTEGER PRIMARY KEY AUTOINCREMENT, title TEXT, description TEXT, createdAt TEXT, updatedAt TEXT, Color TEXT)',
+          'CREATE TABLE grids(id INTEGER PRIMARY KEY AUTOINCREMENT, title TEXT, description TEXT, createdAt TEXT, updatedAt TEXT, Color TEXT)',
         );
       },
       version: 1,
@@ -25,7 +25,7 @@ class Services {
       'description': grid.description,
       'createdAt': grid.createdAt?.toIso8601String(), // ✅ String'e çevir
       'updatedAt': grid.updatedAt?.toIso8601String(),
-      'Color': grid.cardColor?.toARGB32(), // ✅ Renk değerini   String'e çevir
+      'Color': grid.cardColor?.toARGB32().toString(), // ✅ Renk değerini   String'e çevir
     }, conflictAlgorithm: ConflictAlgorithm.replace);
   }
 
@@ -61,7 +61,7 @@ class Services {
         'title': grid.title,
         'description': grid.description,
         'updatedAt': DateTime.now().toIso8601String(),
-        'Color': grid.cardColor?.toARGB32(), // Renk değerini kaydet
+        'Color': grid.cardColor?.toARGB32().toString(), // Renk değerini kaydet
       },
       where: 'id = ?',
       whereArgs: [grid.id],
@@ -77,12 +77,12 @@ class Services {
       whereArgs: [id],
     );
   }
-  static Future<void> testDatabase() async {
+  /*static Future<void> testDatabase() async {
   final db = await getDatabase();
   final count = Sqflite.firstIntValue(await db.rawQuery('SELECT COUNT(*) FROM grids')) ?? 0;
   print('Toplam kayıt sayısı: $count');
 
   final allRecords = await db.rawQuery('SELECT * FROM grids');
   print('Tüm kayıtlar: $allRecords');
-}
+}*/
 }
