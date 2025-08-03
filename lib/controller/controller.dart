@@ -25,6 +25,10 @@ Future <void>loadGrids()async{
       createdAt: DateTime.now(),
       updatedAt: DateTime.now(),
       cardColor: Colors.white,
+      textColor: Colors.black,
+      isBold: false,
+      isItalic: false,
+      isUnderline: false,
     );
     await Services.insertGrid(newGrid);
     await loadGrids();
