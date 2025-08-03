@@ -12,7 +12,7 @@ class Controller extends ChangeNotifier {
 Future <void>loadGrids()async{
   _isLoading = true;
   notifyListeners();
-  _grids = await Services.getAllNotes();
+  _grids = await Services.getAllGrids();
   _isLoading = false;
   notifyListeners();
   // Test amaçlı veritabanı kontrolü
@@ -38,10 +38,10 @@ Future <void>loadGrids()async{
   }
 
   // Not sil
-  Future<void> deleteGrid(int id) async {
+  /*Future<void> deleteGrid(int id) async {
     await Services.deleteGrid(id);
     await loadGrids();
-  }
+  }*/
 
   // Listeyi tersine çevir
   void reverseGrids() {

@@ -7,10 +7,11 @@ class Services {
   // Database bağlantısı
   static Future<Database> getDatabase() async {
     return openDatabase(
-      join(await getDatabasesPath(), 'notepad_v2.sqlite'), // Adı değiştirildi
+      join(await getDatabasesPath(), 'notepad_v3.sqlite'), // Adı değiştirildi
       onCreate: (db, version) {
+        // Tablo oluşturma (eğer yeni tablo oluşturuyorsan)
         return db.execute(
-          'CREATE TABLE grids(id INTEGER PRIMARY KEY AUTOINCREMENT, title TEXT, description TEXT, createdAt TEXT, updatedAt TEXT, Color TEXT)',
+          'CREATE TABLE grids(id INTEGER PRIMARY KEY AUTOINCREMENT, title TEXT, description TEXT, createdAt TEXT, updatedAt TEXT, Color TEXT, textColor TEXT)', // ✅ textColor kolonu ekle
         );
       },
       version: 1,
@@ -23,14 +24,15 @@ class Services {
     await db.insert('grids', {
       'title': grid.title,
       'description': grid.description,
-      'createdAt': grid.createdAt?.toIso8601String(), // ✅ String'e çevir
+      'createdAt': grid.createdAt?.toIso8601String(),
       'updatedAt': grid.updatedAt?.toIso8601String(),
-      'Color': grid.cardColor?.toARGB32().toString(), // ✅ Renk değerini   String'e çevir
+      'Color': grid.cardColor?.toARGB32().toString(),
+      'textColor': grid.textColor?.toARGB32().toString(), // ✅ textColor kaydet
     }, conflictAlgorithm: ConflictAlgorithm.replace);
   }
 
   // Tüm notları getir
-  static Future<List<GridYapisi>> getAllNotes() async {
+  static Future<List<GridYapisi>> getAllGrids() async {
     final db = await getDatabase();
     final List<Map<String, dynamic>> maps = await db.query('grids');
 
@@ -39,14 +41,17 @@ class Services {
         id: maps[i]['id'],
         title: maps[i]['title'],
         description: maps[i]['description'],
-        createdAt: maps[i]['createdAt'] != null 
-            ? DateTime.tryParse(maps[i]['createdAt']) // ✅ String'den DateTime'a çevir
+        createdAt: maps[i]['createdAt'] != null
+            ? DateTime.tryParse(maps[i]['createdAt'])
             : null,
-        updatedAt: maps[i]['updatedAt'] != null 
-            ? DateTime.tryParse(maps[i]['updatedAt']) // ✅ String'den DateTime'a çevir
+        updatedAt: maps[i]['updatedAt'] != null
+            ? DateTime.tryParse(maps[i]['updatedAt'])
             : null,
-            cardColor: maps[i]['Color'] != null
-            ? Color(int.parse(maps[i]['Color'])) // Renk değerini al
+        cardColor: maps[i]['Color'] != null
+            ? Color(int.parse(maps[i]['Color']))
+            : null,
+        textColor: maps[i]['textColor'] != null
+            ? Color(int.parse(maps[i]['textColor'])) // ✅ textColor oku
             : null,
       );
     });
@@ -61,7 +66,8 @@ class Services {
         'title': grid.title,
         'description': grid.description,
         'updatedAt': DateTime.now().toIso8601String(),
-        'Color': grid.cardColor?.toARGB32().toString(), // Renk değerini kaydet
+        'Color': grid.cardColor?.toARGB32().toString(),
+        'textColor': grid.textColor?.toARGB32().toString(), // ✅ textColor güncelle
       },
       where: 'id = ?',
       whereArgs: [grid.id],

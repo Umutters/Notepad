@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:umuttersnotlar/Services/services.dart';
 import 'package:umuttersnotlar/models/grid_yapisi.dart';
 import 'package:umuttersnotlar/theme/renkler.dart';
+import 'package:umuttersnotlar/widgetlar/BottomNavigationBar/bottom_navigatin_bar.dart';
 
 class NoteEditPage extends StatefulWidget {
   final GridYapisi grid;
@@ -13,15 +14,19 @@ class NoteEditPage extends StatefulWidget {
 
 class _NoteEditPageState extends State<NoteEditPage> {
 
-  Color? selectedColor;
+  Color? selectedCardColor;
+  Color? selectedTextColor;
   late TextEditingController titleController;
   late TextEditingController descriptionController;
+  int _selectedIndex = 0;
 
   @override
   void initState() {
     super.initState();
     titleController = TextEditingController(text: widget.grid.title);
     descriptionController = TextEditingController(text: widget.grid.description);
+    selectedCardColor = widget.grid.cardColor;
+    selectedTextColor = widget.grid.textColor;
   }
 
   @override
@@ -80,7 +85,8 @@ class _NoteEditPageState extends State<NoteEditPage> {
                     description: descriptionController.text,
                     createdAt: widget.grid.createdAt ?? DateTime.now(),
                     updatedAt: DateTime.now(),
-                    cardColor: selectedColor ?? widget.grid.cardColor,
+                    cardColor: selectedCardColor ?? widget.grid.cardColor,
+                    textColor: selectedTextColor ?? widget.grid.textColor,
                   );
                   if (updatedGrid.id != null) {
               await Services.updateGrid(updatedGrid);
@@ -96,20 +102,13 @@ class _NoteEditPageState extends State<NoteEditPage> {
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
-          children: [
-            /*TextField(
-              controller: titleController,
-              decoration: InputDecoration(
-                labelText: 'Başlık',
-                border: OutlineInputBorder(),
-              ),
-            ),*/
+          children: [           
             SizedBox(height: 16),
             SingleChildScrollView(
               child: TextField(
                 
                 controller: descriptionController,
-                style: TextStyle(fontSize: 16,color: selectedColor ?? Colors.black),
+                style: TextStyle(fontSize: 16,color: selectedTextColor ?? Colors.black),
                 decoration: InputDecoration(
                  
                   border: OutlineInputBorder(),
@@ -119,38 +118,16 @@ class _NoteEditPageState extends State<NoteEditPage> {
                 maxLines: 8,
               ),
             ),
-            SizedBox(height: 16),
-            Expanded(
-              child: GridView.builder(
-                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                
-                  crossAxisCount:Renkler.renkler.length,
-                  childAspectRatio: 1,
-                  crossAxisSpacing: 8,
-                  mainAxisSpacing: 20,
-                ),
-                itemCount: Renkler.renkler.length,
-                itemBuilder: (context, index) {
-                  return GestureDetector(
-                    onTap: () {
-                      // Renk seçildiğinde, notun rengini güncelle
-                      setState(() {
-                        selectedColor = Renkler.renkler[index];
-                      });
-                    },
-                    child: Container(
-                      height: 100,
-                      width: 100,
-                      color: Renkler.renkler[index],
-                      
-                    ),
-                  );
-                },
-              ),
-            )
+            
           ],
         ),
       ),
+      bottomNavigationBar: MyBottomNavBar(onColorChanged: (value) => setState(() => selectedTextColor = value),selectedColor: selectedTextColor, currentIndex: _selectedIndex, onTap: (index) {
+        setState(() {
+          _selectedIndex = index;
+        });
+        
+      }),
       backgroundColor: Renkler.scaffoldColor,
     );
     

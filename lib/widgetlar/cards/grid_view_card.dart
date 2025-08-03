@@ -72,10 +72,10 @@ class _GridViewCardState extends State<GridViewCard> {
       },
       child: Card(
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(20),
+          borderRadius: BorderRadius.circular(25),
         ),
         color: grid.cardColor ?? Colors.white,
-        elevation: 2,
+        elevation: 4,
         margin: const EdgeInsets.all(4),
         child: Stack(
           children: [
@@ -87,10 +87,11 @@ class _GridViewCardState extends State<GridViewCard> {
                 children: [
                   // Başlık
                   Text(
-                    grid.title ?? '',
-                    style: const TextStyle(
-                      fontSize: 16,
+                    grid.title ?? 'Başlıksız',
+                    style: TextStyle(
                       fontWeight: FontWeight.bold,
+                      fontSize: 16,
+                      color:  Colors.black, // ✅ textColor kullan
                     ),
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
@@ -100,7 +101,10 @@ class _GridViewCardState extends State<GridViewCard> {
                   // İçerik
                   Text(
                     grid.description ?? '',
-                    style: const TextStyle(fontSize: 14),
+                    style: TextStyle(
+                      fontSize: 14,
+                      color: grid.textColor ?? Colors.grey[600], // ✅ textColor kullan
+                    ),
                     maxLines: 3,
                     overflow: TextOverflow.ellipsis,
                   ),
