@@ -36,13 +36,15 @@ class _NoteEditPageState extends State<NoteEditPage> {
     return Scaffold(
       appBar: AppBar(
         title: GestureDetector(
-          child: Text('${widget.grid.title}'),
+          child: widget.grid.title == null || widget.grid.title!.isEmpty
+            ? Text('Yeni Not')
+            : Text(widget.grid.title!),
           onTap: () {
             showDialog(
               context: context,
               builder: (BuildContext context) {
                 return AlertDialog(
-                  title: Text('Not Başlığı'),
+                  title: Text('Not Başlığı',style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold,color: Colors.black),),
                   content: TextField(
                     controller: titleController,
                     decoration: InputDecoration(hintText: 'Başlık girin'),
