@@ -279,9 +279,13 @@
       ]
     },
     {
-      "name": "sky_engine",
-      "version": "0.0.0",
-      "dependencies": []
+      "name": "sqflite_common",
+      "version": "2.5.6",
+      "dependencies": [
+        "meta",
+        "path",
+        "synchronized"
+      ]
     },
     {
       "name": "sqflite_platform_interface",
@@ -292,13 +296,6 @@
         "platform",
         "plugin_platform_interface",
         "sqflite_common"
-      ]
-    },
-    {
-      "name": "plugin_platform_interface",
-      "version": "2.1.8",
-      "dependencies": [
-        "meta"
       ]
     },
     {
@@ -313,15 +310,6 @@
       ]
     },
     {
-      "name": "sqflite_common",
-      "version": "2.5.6",
-      "dependencies": [
-        "meta",
-        "path",
-        "synchronized"
-      ]
-    },
-    {
       "name": "sqflite_android",
       "version": "2.4.1",
       "dependencies": [
@@ -332,13 +320,25 @@
       ]
     },
     {
-      "name": "platform",
-      "version": "3.1.6",
+      "name": "sky_engine",
+      "version": "0.0.0",
       "dependencies": []
     },
     {
       "name": "synchronized",
       "version": "3.4.0",
+      "dependencies": []
+    },
+    {
+      "name": "plugin_platform_interface",
+      "version": "2.1.8",
+      "dependencies": [
+        "meta"
+      ]
+    },
+    {
+      "name": "platform",
+      "version": "3.1.6",
       "dependencies": []
     }
   ],

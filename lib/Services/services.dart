@@ -20,19 +20,19 @@ class Services {
   // Not ekleme
   static Future<void> insertGrid(GridYapisi grid) async {
     final db = await getDatabase();
-    await db.insert('Notes', {
+    await db.insert('grids', {
       'title': grid.title,
       'description': grid.description,
       'createdAt': grid.createdAt?.toIso8601String(), // ✅ String'e çevir
       'updatedAt': grid.updatedAt?.toIso8601String(),
-      'Color': grid.cardColor?.value.toString(), // ✅ Renk değerini   String'e çevir
+      'Color': grid.cardColor?.toARGB32(), // ✅ Renk değerini   String'e çevir
     }, conflictAlgorithm: ConflictAlgorithm.replace);
   }
 
   // Tüm notları getir
   static Future<List<GridYapisi>> getAllNotes() async {
     final db = await getDatabase();
-    final List<Map<String, dynamic>> maps = await db.query('Notes');
+    final List<Map<String, dynamic>> maps = await db.query('grids');
 
     return List.generate(maps.length, (i) {
       return GridYapisi(
@@ -56,12 +56,12 @@ class Services {
   static Future<void> updateGrid(GridYapisi grid) async {
     final db = await getDatabase();
     await db.update(
-      'Notes',
+      'grids',
       {
         'title': grid.title,
         'description': grid.description,
         'updatedAt': DateTime.now().toIso8601String(),
-        'Color': grid.cardColor?.value.toString(), // Renk değerini kaydet
+        'Color': grid.cardColor?.toARGB32(), // Renk değerini kaydet
       },
       where: 'id = ?',
       whereArgs: [grid.id],
@@ -72,17 +72,17 @@ class Services {
   static Future<void> deleteGrid(int id) async {
     final db = await getDatabase();
     await db.delete(
-      'Notes',
+      'grids',
       where: 'id = ?',
       whereArgs: [id],
     );
   }
   static Future<void> testDatabase() async {
   final db = await getDatabase();
-  final count = Sqflite.firstIntValue(await db.rawQuery('SELECT COUNT(*) FROM Notes'));
+  final count = Sqflite.firstIntValue(await db.rawQuery('SELECT COUNT(*) FROM grids')) ?? 0;
   print('Toplam kayıt sayısı: $count');
 
-  final allRecords = await db.rawQuery('SELECT * FROM Notes');
+  final allRecords = await db.rawQuery('SELECT * FROM grids');
   print('Tüm kayıtlar: $allRecords');
 }
 }
