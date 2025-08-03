@@ -7,10 +7,13 @@
       "name": "umuttersnotlar",
       "version": "1.0.0+1",
       "dependencies": [
+        "cupertino_icons",
         "flutter",
         "flutter_colorpicker",
         "flutter_localizations",
-        "flutter_staggered_grid_view"
+        "intl",
+        "path",
+        "sqflite"
       ],
       "devDependencies": [
         "flutter_lints",
@@ -53,6 +56,20 @@
       ]
     },
     {
+      "name": "cupertino_icons",
+      "version": "1.0.8",
+      "dependencies": []
+    },
+    {
+      "name": "intl",
+      "version": "0.20.2",
+      "dependencies": [
+        "clock",
+        "meta",
+        "path"
+      ]
+    },
+    {
       "name": "flutter_localizations",
       "version": "0.0.0",
       "dependencies": [
@@ -68,15 +85,25 @@
       ]
     },
     {
-      "name": "flutter_colorpicker",
-      "version": "1.1.0",
+      "name": "path",
+      "version": "1.9.1",
+      "dependencies": []
+    },
+    {
+      "name": "sqflite",
+      "version": "2.4.2",
       "dependencies": [
-        "flutter"
+        "flutter",
+        "path",
+        "sqflite_android",
+        "sqflite_common",
+        "sqflite_darwin",
+        "sqflite_platform_interface"
       ]
     },
     {
-      "name": "flutter_staggered_grid_view",
-      "version": "0.4.1",
+      "name": "flutter_colorpicker",
+      "version": "1.1.0",
       "dependencies": [
         "flutter"
       ]
@@ -226,11 +253,6 @@
       ]
     },
     {
-      "name": "path",
-      "version": "1.9.1",
-      "dependencies": []
-    },
-    {
       "name": "matcher",
       "version": "0.12.17",
       "dependencies": [
@@ -257,17 +279,66 @@
       ]
     },
     {
-      "name": "intl",
-      "version": "0.20.2",
+      "name": "sqflite_common",
+      "version": "2.5.6",
       "dependencies": [
-        "clock",
         "meta",
-        "path"
+        "path",
+        "synchronized"
+      ]
+    },
+    {
+      "name": "sqflite_platform_interface",
+      "version": "2.4.0",
+      "dependencies": [
+        "flutter",
+        "meta",
+        "platform",
+        "plugin_platform_interface",
+        "sqflite_common"
+      ]
+    },
+    {
+      "name": "sqflite_darwin",
+      "version": "2.4.2",
+      "dependencies": [
+        "flutter",
+        "meta",
+        "path",
+        "sqflite_common",
+        "sqflite_platform_interface"
+      ]
+    },
+    {
+      "name": "sqflite_android",
+      "version": "2.4.1",
+      "dependencies": [
+        "flutter",
+        "path",
+        "sqflite_common",
+        "sqflite_platform_interface"
       ]
     },
     {
       "name": "sky_engine",
       "version": "0.0.0",
+      "dependencies": []
+    },
+    {
+      "name": "synchronized",
+      "version": "3.4.0",
+      "dependencies": []
+    },
+    {
+      "name": "plugin_platform_interface",
+      "version": "2.1.8",
+      "dependencies": [
+        "meta"
+      ]
+    },
+    {
+      "name": "platform",
+      "version": "3.1.6",
       "dependencies": []
     }
   ],

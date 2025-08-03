@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:umuttersnotlar/classlar/renkler.dart';
+import 'package:umuttersnotlar/theme/renkler.dart';
 class MyDrawer extends StatefulWidget {
   const MyDrawer({super.key});
 

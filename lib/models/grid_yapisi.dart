@@ -6,5 +6,6 @@ class GridYapisi{
   DateTime? createdAt;
   DateTime? updatedAt;
   Color? cardColor;
-  GridYapisi({required this.id, required this.title, required this.description, this.createdAt, this.updatedAt, this.cardColor});
+  Color? textColor;
+  GridYapisi({this.id, required this.title, required this.description, this.createdAt, this.updatedAt, this.cardColor, this.textColor});
 }

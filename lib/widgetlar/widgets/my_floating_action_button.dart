@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:umuttersnotlar/classlar/renkler.dart';
+import 'package:umuttersnotlar/theme/renkler.dart';
 
 class MyFloatingActionButton extends StatelessWidget {
   final void Function(String title) onAdd;
@@ -8,7 +8,6 @@ class MyFloatingActionButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    
     return FloatingActionButton(
       backgroundColor: Renkler.scaffoldColor,
       onPressed: () {
@@ -18,15 +17,21 @@ class MyFloatingActionButton extends StatelessWidget {
             return AlertDialog(
               title: Text('Yeni Not Ekle'),
               content: TextField(
-                decoration: InputDecoration(hintText: 'Not başlığı'),
                 controller: textEditingController,
-                
+                decoration: InputDecoration(hintText: 'Başlık girin'),
               ),
               actions: [
-                NotesTextButton(),
+                TextButton(
+                  onPressed: () => Navigator.of(context).pop(),
+                  child: Text('İptal'),
+                ),
                 TextButton(
                   onPressed: () {
-                    onAdd(textEditingController.text);
+                    final title = textEditingController.text;
+                    if (title.isNotEmpty) {
+                      onAdd(title);
+                    }
+                    textEditingController.clear();
                     Navigator.of(context).pop();
                   },
                   child: Text('Ekle'),
@@ -36,21 +41,8 @@ class MyFloatingActionButton extends StatelessWidget {
           }
         );
       },
-      child:const Icon(Icons.add,color: Colors.white,),
+      child: const Icon(Icons.add, color: Color.fromARGB(255, 0, 0, 0)),
     );
   }
 }
 
-class NotesTextButton extends StatelessWidget {
-  const NotesTextButton({
-    super.key,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return TextButton(
-      onPressed: () => Navigator.of(context).pop(),
-      child: Text('İptal'),
-    );
-  }
-}

@@ -1,14 +1,18 @@
 import 'package:flutter/material.dart';
-import 'package:umuttersnotlar/classlar/renkler.dart';
+import 'package:umuttersnotlar/theme/renkler.dart';
 
 class NotUygulamaAppBar extends StatelessWidget implements PreferredSizeWidget {
   final bool isBrandClicked;
   final VoidCallback? onBrandToggle;
-
+  final bool isButtonClicked;
+  final ValueChanged<String?>? onSearch;
   const NotUygulamaAppBar({
     super.key, 
+    required this.onBrandToggle,
     required this.isBrandClicked, 
-    this.onBrandToggle
+    required this.isButtonClicked,
+    required this.onSearch,
+
   });
 
   @override
@@ -58,17 +62,17 @@ class NotUygulamaAppBar extends StatelessWidget implements PreferredSizeWidget {
   AppBar _buildNormalAppBar(BuildContext context, VoidCallback onToggle) {
     return AppBar(
       backgroundColor: Renkler.scaffoldColor,
-      title: const Text('Not Uygulaması'),
+      title: const Text('Not Uygulaması',style: TextStyle(color: Color.fromARGB(255, 0, 0, 0)),),
       centerTitle: true,
       actions: [
         IconButton(
-          onPressed: onToggle, 
-          icon: const Icon(Icons.search)
+          onPressed: onToggle,
+          icon: const Icon(Icons.search, color: Color.fromARGB(255, 0, 0, 0))
         ),
       ],
       leading: Builder(
         builder: (context) => IconButton(
-          icon: const Icon(Icons.menu),
+          icon: const Icon(Icons.menu, color: Color.fromARGB(255, 0, 0, 0)),
           onPressed: () {
             Scaffold.maybeOf(context)?.openDrawer();
           },

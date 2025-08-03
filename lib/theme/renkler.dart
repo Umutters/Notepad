@@ -12,7 +12,9 @@ static List<Color> renkler = [
     Colors.teal,
     Colors.cyan,
     Colors.indigo,
+    Colors.white,
+    Colors.black,
   ];
-  static const Color scaffoldColor = Color.fromARGB(255, 123, 123, 123);
+  static const Color scaffoldColor = Color.fromARGB(255, 255, 255, 255);
 
   }
