@@ -1,2 +1,2 @@
 # Notepad
-Notepad using with flutter sdk
+Notepad using flutter sdk
