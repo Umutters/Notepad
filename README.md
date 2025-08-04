@@ -13,6 +13,7 @@ Flutter SDK kullanarak geliştirilmiş basit, hızlı ve işlevsel bir not tutma
 
 <!-- Buraya uygulamanın bir ekran görüntüsünü ekleyin -->
 ![0a210735-de0b-4bd9-ba19-4cb9d86ff652](https://github.com/user-attachments/assets/cabda2bf-ca5a-424d-b161-7d46215071bc)
+![WhatsApp Image 2025-08-04 at 03 12 29](https://github.com/user-attachments/assets/c16ba7ee-d50f-4d10-b029-7cb042bfa5f9)
 
 
 ## ⚙️ Kurulum
