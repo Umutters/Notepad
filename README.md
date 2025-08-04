@@ -7,7 +7,7 @@ Flutter SDK kullanarak geliştirilmiş basit, hızlı ve işlevsel bir not tutma
 - Not oluşturma, düzenleme ve silme
 - Modern ve kullanıcı dostu arayüz
 - Karanlık mod desteği
-- Hızlı arama ve filtreleme
+
 
 ## 📱 Ekran Görüntüsü
 
