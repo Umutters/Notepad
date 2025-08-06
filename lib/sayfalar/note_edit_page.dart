@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_quill/flutter_quill.dart';
 import 'package:umuttersnotlar/Services/services.dart';
 import 'package:umuttersnotlar/models/grid_yapisi.dart';
-import 'package:umuttersnotlar/theme/renkler.dart';
+//import 'package:umuttersnotlar/theme/renkler.dart';
 import 'package:umuttersnotlar/widgetlar/BottomNavigationBar/bottom_navigatin_bar.dart';
+import 'package:umuttersnotlar/Services/theme_helper.dart';
 
 class NoteEditPage extends StatefulWidget {
   final GridYapisi grid;
@@ -14,7 +14,7 @@ class NoteEditPage extends StatefulWidget {
 }
 
 class _NoteEditPageState extends State<NoteEditPage> {
-  late QuillController _quillController;
+  
   Color? selectedCardColor;
   Color? selectedTextColor;
    TextEditingController? titleController;
@@ -26,8 +26,8 @@ class _NoteEditPageState extends State<NoteEditPage> {
   @override
   void initState() {
     super.initState();
-    _quillController = QuillController.basic();
-    _quillController.document.insert(0, widget.grid.description ?? '');
+    
+   
     titleController = TextEditingController(text: widget.grid.title);
     descriptionController = TextEditingController(text: widget.grid.description);
     selectedCardColor = widget.grid.cardColor;
@@ -43,8 +43,7 @@ class _NoteEditPageState extends State<NoteEditPage> {
   @override
   void dispose() {
     titleController?.dispose();
-    descriptionController.dispose();
-    _quillController.dispose();
+    descriptionController.dispose();  
     super.dispose();
   }
 
@@ -112,7 +111,7 @@ class _NoteEditPageState extends State<NoteEditPage> {
   
                   if (updatedGrid.id != null) {
                     await Services.updateGrid(updatedGrid);
-                    print('Not kaydedildi: ${updatedGrid.title}');
+                   // print('Not kaydedildi: ${updatedGrid.title}');
                   }
   
                   // Ana sayfaya güncellenen notu geri gönder
@@ -124,9 +123,9 @@ class _NoteEditPageState extends State<NoteEditPage> {
             ],
           ),
       body: Column(
-        children: [ 
-          
-            SizedBox(height: 16),
+        children: [
+
+            
             Expanded(
               child: Container(
                 color: selectedCardColor ?? widget.grid.cardColor ?? Colors.white,
@@ -168,7 +167,7 @@ class _NoteEditPageState extends State<NoteEditPage> {
         currentIndex: _selectedIndex,
         onTap: (index) => setState(() => _selectedIndex = index),
       ),
-      backgroundColor: Renkler.scaffoldColor,
+      backgroundColor: ThemeHelper.getScaffoldColor(context), // ✅ Theme'dan otomatik al 
     );
     
   }

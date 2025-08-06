@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:umuttersnotlar/Services/theme_helper.dart';
 import 'package:umuttersnotlar/models/grid_yapisi.dart';
 import 'package:umuttersnotlar/sayfalar/note_edit_page.dart';
 import 'package:umuttersnotlar/widgetlar/widgets/show_colorpicker.dart';
@@ -29,11 +30,11 @@ class _GridViewCardState extends State<GridViewCard> {
   @override
   Widget build(BuildContext context) {
     if (widget.grids.isEmpty) {
-      return const Expanded(
+      return  Expanded(
         child: Center(
           child: Text(
             'Henüz not eklenmemiş',
-            style: TextStyle(fontSize: 16, color: Colors.grey),
+            style: TextStyle(fontSize: 16,color:ThemeHelper.getTextColor(context)),
           ),
         ),
       );

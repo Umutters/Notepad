@@ -16,5 +16,6 @@ static List<Color> renkler = [
     Colors.black,
   ];
   static const Color scaffoldColor = Color.fromARGB(255, 255, 255, 255);
+  static const Color darkScaffoldColor = Color.fromARGB(255, 18, 18, 18);
 
   }
