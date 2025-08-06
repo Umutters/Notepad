@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:umuttersnotlar/Services/theme_helper.dart';
 
 
 class MyBottomNavBar extends StatelessWidget {
@@ -26,35 +27,35 @@ class MyBottomNavBar extends StatelessWidget {
 
   Widget _buildBottomBar(BuildContext context) {
     return Container(
-      color: Colors.grey[100],
+      color: ThemeHelper.getAppBarColor(context),
       padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
       child: SafeArea(
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
             IconButton(
-              icon: Icon(Icons.format_bold),
+              icon: Icon(Icons.format_bold,color: ThemeHelper.getIconColor(context),),
               tooltip: 'Kalın',
               onPressed: () {
                 _toggleFormat('bold'); // ✅ Toggle format
               },
             ),
             IconButton(
-              icon: Icon(Icons.format_italic),
+              icon: Icon(Icons.format_italic,color: ThemeHelper.getIconColor(context),),
               tooltip: 'İtalik',
               onPressed: () {
                 _toggleFormat('italic');
               },
             ),
             IconButton(
-              icon: Icon(Icons.format_size),
+              icon: Icon(Icons.format_size,color: ThemeHelper.getIconColor(context),),
               tooltip: 'Büyüt',
               onPressed: () {
                 _formatSelectedText('uppercase'); // Sadece text transform
               },
             ),
             IconButton(
-              icon: Icon(Icons.color_lens),
+              icon: Icon(Icons.color_lens,color: ThemeHelper.getIconColor(context),),
               tooltip: 'Renk Seç',
               onPressed: () {
                 _showColorPicker(context);
@@ -62,7 +63,7 @@ class MyBottomNavBar extends StatelessWidget {
             ),
             //altına çizgi ekle
             IconButton(
-              icon: Icon(Icons.format_underline),
+              icon: Icon(Icons.format_underline,color: ThemeHelper.getIconColor(context),),
               tooltip: 'Altı Çizili',
               onPressed: () {
                 _toggleFormat('underline'); // ✅ Altı çizili format

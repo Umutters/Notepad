@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:umuttersnotlar/Services/background_themes.dart';
 import 'package:umuttersnotlar/Services/services.dart';
+import 'package:umuttersnotlar/Services/theme_helper.dart';
 import 'package:umuttersnotlar/models/grid_yapisi.dart';
 
 class Controller extends ChangeNotifier {
@@ -18,14 +20,14 @@ Future <void>loadGrids()async{
   // Test amaçlı veritabanı kontrolü
 }
 
-  Future<void> addGrid(String title) async {
+  Future<void> addGrid(String title, BuildContext context) async {
     final newGrid = GridYapisi(
       title: title,
       description: '',
       createdAt: DateTime.now(),
       updatedAt: DateTime.now(),
-      cardColor: Colors.white,
-      textColor: Colors.black,
+      cardColor: ThemeHelper.getCardColor(context),
+      textColor: ThemeHelper.getTextColor(context),
       isBold: false,
       isItalic: false,
       isUnderline: false,
@@ -41,6 +43,10 @@ Future <void>loadGrids()async{
     
   }
 
+  //toggletheme yap
+  void toggleTheme() {
+    ThemeProvider().toggleTheme();
+  }
   // Not sil
   /*Future<void> deleteGrid(int id) async {
     await Services.deleteGrid(id);

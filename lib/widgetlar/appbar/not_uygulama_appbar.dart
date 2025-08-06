@@ -1,18 +1,20 @@
 import 'package:flutter/material.dart';
-import 'package:umuttersnotlar/theme/renkler.dart';
+import 'package:umuttersnotlar/Services/theme_helper.dart';
+//import 'package:umuttersnotlar/theme/renkler.dart';
 
 class NotUygulamaAppBar extends StatelessWidget implements PreferredSizeWidget {
   final bool isBrandClicked;
   final VoidCallback? onBrandToggle;
   final bool isButtonClicked;
   final ValueChanged<String?>? onSearch;
+  final Function? onThemeToggle;
   const NotUygulamaAppBar({
     super.key, 
     required this.onBrandToggle,
     required this.isBrandClicked, 
     required this.isButtonClicked,
     required this.onSearch,
-
+    required this.onThemeToggle,
   });
 
   @override
@@ -21,20 +23,20 @@ class NotUygulamaAppBar extends StatelessWidget implements PreferredSizeWidget {
   @override
   Widget build(BuildContext context) {
     // Ortak renkler ve stiller
-    const textStyle = TextStyle(fontSize: 16);
+     TextStyle textStyle = TextStyle(fontSize: 16, color: ThemeHelper.getTextColor(context));
     
     // Ortak callback
     void handleToggle() => onBrandToggle?.call();
     
     return isBrandClicked 
-      ? _buildSearchAppBar(handleToggle, textStyle)
+      ? _buildSearchAppBar(handleToggle, textStyle, context)
       : _buildNormalAppBar(context, handleToggle);
   }
   
   // Arama modu AppBar'ı
-  AppBar _buildSearchAppBar(VoidCallback onToggle, TextStyle textStyle) {
+  AppBar _buildSearchAppBar(VoidCallback onToggle, TextStyle textStyle, BuildContext context) {
     return AppBar(
-      backgroundColor: Renkler.scaffoldColor,
+      backgroundColor: ThemeHelper.getAppBarColor(context),
       centerTitle: false,
       leading: IconButton(
         icon: const Icon(Icons.close),
@@ -48,7 +50,7 @@ class NotUygulamaAppBar extends StatelessWidget implements PreferredSizeWidget {
             borderSide: BorderSide.none,
           ),
           filled: true,
-          fillColor: Colors.grey[200],
+          fillColor: ThemeHelper.getSearchFieldColor(context),
           contentPadding: const EdgeInsets.symmetric(vertical: 6, horizontal: 12),
           prefixIcon: const Icon(Icons.search),
         ),
@@ -61,18 +63,18 @@ class NotUygulamaAppBar extends StatelessWidget implements PreferredSizeWidget {
   // Normal mod AppBar'ı
   AppBar _buildNormalAppBar(BuildContext context, VoidCallback onToggle) {
     return AppBar(
-      backgroundColor: Renkler.scaffoldColor,
-      title: const Text('Not Uygulaması',style: TextStyle(color: Color.fromARGB(255, 0, 0, 0)),),
+      backgroundColor: ThemeHelper.getAppBarColor(context),
+      title:  Text('Not Uygulaması',style: TextStyle(color: ThemeHelper.getTextColor(context)),),
       centerTitle: true,
       actions: [
         IconButton(
           onPressed: onToggle,
-          icon: const Icon(Icons.search, color: Color.fromARGB(255, 0, 0, 0))
+          icon: Icon(Icons.search, color: ThemeHelper.getIconColor(context))
         ),
       ],
       leading: Builder(
         builder: (context) => IconButton(
-          icon: const Icon(Icons.menu, color: Color.fromARGB(255, 0, 0, 0)),
+          icon:  Icon(Icons.menu, color: ThemeHelper.getIconColor(context)),
           onPressed: () {
             Scaffold.maybeOf(context)?.openDrawer();
           },

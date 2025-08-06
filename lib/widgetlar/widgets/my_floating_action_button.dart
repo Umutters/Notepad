@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:umuttersnotlar/theme/renkler.dart';
+import 'package:umuttersnotlar/Services/theme_helper.dart';
 
 class MyFloatingActionButton extends StatelessWidget {
   final void Function(String title) onAdd;
@@ -9,7 +9,7 @@ class MyFloatingActionButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return FloatingActionButton(
-      backgroundColor: Renkler.scaffoldColor,
+      backgroundColor: ThemeHelper.getFloatingActionButtonColor(context),
       onPressed: () {
         showDialog(
           context: context,
@@ -41,7 +41,7 @@ class MyFloatingActionButton extends StatelessWidget {
           }
         );
       },
-      child: const Icon(Icons.add, color: Color.fromARGB(255, 0, 0, 0)),
+      child:  Icon(Icons.add,color: Theme.of(context).floatingActionButtonTheme.foregroundColor),
     );
   }
 }
